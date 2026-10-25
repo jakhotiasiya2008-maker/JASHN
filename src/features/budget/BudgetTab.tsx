@@ -132,7 +132,7 @@ export const BudgetTab: React.FC = () => {
             </svg>
 
             {/* Inner Center Label */}
-            <div className="absolute flex flex-col items-center justify-center text-center">
+            <div className="pointer-events-none absolute flex flex-col items-center justify-center text-center">
               <span className="text-xs uppercase tracking-wider text-text-muted">Total Budget</span>
               <span className="font-serif text-xl font-bold text-accent-primary">
                 ₹{(total / 100000).toFixed(1)}L
