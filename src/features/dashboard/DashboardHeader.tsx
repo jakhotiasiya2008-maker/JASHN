@@ -2,6 +2,7 @@ import React from 'react';
 import { usePlannerStore } from '../../lib/store';
 import { Badge } from '../../components/ui/Badge';
 import { GlassCard } from '../../components/ui/GlassCard';
+import { CountUp } from '../../components/ui/CountUp';
 import {
   Calendar,
   Users,
@@ -16,7 +17,7 @@ export const DashboardHeader: React.FC = () => {
   if (!intake || !budgetPlan || !timelinePlan) return null;
 
   const daysRemaining = timelinePlan.daysRemaining;
-  const budgetInLakhs = (budgetPlan.totalBudgetINR / 100000).toFixed(1);
+  const budgetInLakhs = (budgetPlan.totalBudgetINR / 100000);
 
   return (
     <GlassCard className="relative overflow-hidden border-border-highlight">
@@ -71,7 +72,7 @@ export const DashboardHeader: React.FC = () => {
               <span>Countdown</span>
             </div>
             <p className="mt-1 font-serif text-2xl font-bold text-accent-primary">
-              {daysRemaining}
+              <CountUp value={daysRemaining} />
               <span className="ml-1 text-xs font-normal text-text-secondary">days</span>
             </p>
           </div>
@@ -83,7 +84,7 @@ export const DashboardHeader: React.FC = () => {
               <span>Total Budget</span>
             </div>
             <p className="mt-1 font-serif text-2xl font-bold text-text-primary">
-              ₹{budgetInLakhs}
+              ₹<CountUp value={budgetInLakhs} formatter={(v) => v.toFixed(1)} />
               <span className="ml-1 text-xs font-normal text-text-secondary">L</span>
             </p>
           </div>
@@ -95,7 +96,7 @@ export const DashboardHeader: React.FC = () => {
               <span>Attendees</span>
             </div>
             <p className="mt-1 font-serif text-2xl font-bold text-text-primary">
-              {intake.guestCount}
+              <CountUp value={intake.guestCount} />
               <span className="ml-1 text-xs font-normal text-text-secondary">guests</span>
             </p>
           </div>
@@ -107,7 +108,7 @@ export const DashboardHeader: React.FC = () => {
               <span>Per Guest</span>
             </div>
             <p className="mt-1 font-serif text-2xl font-bold text-accent-primary">
-              ₹{budgetPlan.perGuestCostINR.toLocaleString('en-IN')}
+              ₹<CountUp value={budgetPlan.perGuestCostINR} />
             </p>
           </div>
         </div>

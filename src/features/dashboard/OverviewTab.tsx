@@ -4,6 +4,7 @@ import { GlassCard } from '../../components/ui/GlassCard';
 import { Slider } from '../../components/ui/Slider';
 import { Badge } from '../../components/ui/Badge';
 import { Button } from '../../components/ui/Button';
+import { TypewriterText } from '../../components/ui/TypewriterText';
 import { fetchTradeoffExplanation } from '../../lib/apiClient';
 import { computeVendorProgress } from '../../domain/vendors';
 import {
@@ -281,7 +282,7 @@ export const OverviewTab: React.FC = () => {
           {tradeoffExplanation ? (
             <div className="mt-3 space-y-3">
               <p className="text-sm font-medium text-text-primary leading-relaxed">
-                {tradeoffExplanation.summary}
+                <TypewriterText text={tradeoffExplanation.summary} />
               </p>
 
               <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 pt-2 border-t border-border-subtle">
