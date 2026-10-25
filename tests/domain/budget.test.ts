@@ -65,7 +65,7 @@ describe('Budget Engine - Pure Domain Logic', () => {
 
     let calculatedSum = 0;
     for (const catId of CATEGORY_IDS) {
-      const alloc = plan.allocations[catId];
+      const alloc = plan.allocations[catId]!;
       expect(alloc).toBeDefined();
       expect(alloc.allocatedAmountINR).toBeGreaterThanOrEqual(0);
       expect(Number.isInteger(alloc.allocatedAmountINR)).toBe(true);
@@ -112,7 +112,7 @@ describe('Budget Engine - Pure Domain Logic', () => {
 
       let sum = 0;
       for (const catId of CATEGORY_IDS) {
-        const amount = plan.allocations[catId].allocatedAmountINR;
+        const amount = plan.allocations[catId]!.allocatedAmountINR;
         expect(amount).toBeGreaterThanOrEqual(0);
         expect(Number.isInteger(amount)).toBe(true);
         sum += amount;
@@ -147,8 +147,8 @@ describe('Budget Engine - Pure Domain Logic', () => {
       },
     });
 
-    expect(rebalanced.allocations.venue.allocatedAmountINR).toBe(600000);
-    expect(rebalanced.allocations.venue.isLocked).toBe(true);
+    expect(rebalanced.allocations.venue!.allocatedAmountINR).toBe(600000);
+    expect(rebalanced.allocations.venue!.isLocked).toBe(true);
     expect(rebalanced.allocatedSumINR).toBe(2000000);
     expect(rebalanced.remainingINR).toBe(0);
 
@@ -158,8 +158,8 @@ describe('Budget Engine - Pure Domain Logic', () => {
     });
 
     // Venue must remain locked at ₹6,00,000
-    expect(rebalancedTotal.allocations.venue.allocatedAmountINR).toBe(600000);
-    expect(rebalancedTotal.allocations.venue.isLocked).toBe(true);
+    expect(rebalancedTotal.allocations.venue!.allocatedAmountINR).toBe(600000);
+    expect(rebalancedTotal.allocations.venue!.isLocked).toBe(true);
     expect(rebalancedTotal.totalBudgetINR).toBe(2500000);
     expect(rebalancedTotal.allocatedSumINR).toBe(2500000);
 
@@ -167,7 +167,7 @@ describe('Budget Engine - Pure Domain Logic', () => {
     const unlockedPlan = rebalanceBudget(rebalancedTotal, {
       toggleLockCategory: 'venue',
     });
-    expect(unlockedPlan.allocations.venue.isLocked).toBe(false);
+    expect(unlockedPlan.allocations.venue!.isLocked).toBe(false);
   });
 
   it('computes adjusted weights reflecting guest count, city tier, and priorities', () => {

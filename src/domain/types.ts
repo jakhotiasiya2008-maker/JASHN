@@ -6,6 +6,14 @@ import {
   UserPriority,
 } from './constants';
 
+export type {
+  BudgetCategoryId,
+  CityTier,
+  WeddingFunction,
+  WeddingVibe,
+  UserPriority,
+};
+
 export interface WeddingIntake {
   coupleNames?: string;
   weddingDate: string; // YYYY-MM-DD

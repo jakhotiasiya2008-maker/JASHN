@@ -259,28 +259,33 @@ export function rebalanceBudget(
   );
 
   // Clone current allocations
-  const workingAllocations: Record<BudgetCategoryId, CategoryAllocation> = {
+  const workingAllocations = {
     ...currentPlan.allocations,
-  };
+  } as Record<BudgetCategoryId, CategoryAllocation>;
 
   // Toggle lock if requested
   if (updates.toggleLockCategory) {
     const target = workingAllocations[updates.toggleLockCategory];
-    workingAllocations[updates.toggleLockCategory] = {
-      ...target,
-      isLocked: !target.isLocked,
-    };
+    if (target) {
+      workingAllocations[updates.toggleLockCategory] = {
+        ...target,
+        isLocked: !target.isLocked,
+      };
+    }
   }
 
   // Handle explicit category change
   if (updates.targetCategoryChange) {
     const { categoryId, amountINR, lock } = updates.targetCategoryChange;
     const clampedAmount = Math.max(0, Math.min(totalBudget, Math.round(amountINR)));
-    workingAllocations[categoryId] = {
-      ...workingAllocations[categoryId],
-      allocatedAmountINR: clampedAmount,
-      isLocked: lock,
-    };
+    const currentCat = workingAllocations[categoryId];
+    if (currentCat) {
+      workingAllocations[categoryId] = {
+        ...currentCat,
+        allocatedAmountINR: clampedAmount,
+        isLocked: lock,
+      };
+    }
   }
 
   // Calculate locked pool and available unlocked budget
@@ -288,8 +293,9 @@ export function rebalanceBudget(
   const unlockedCategories: BudgetCategoryId[] = [];
 
   for (const id of CATEGORY_IDS) {
-    if (workingAllocations[id].isLocked) {
-      lockedSum += workingAllocations[id].allocatedAmountINR;
+    const cat = workingAllocations[id];
+    if (cat?.isLocked) {
+      lockedSum += cat.allocatedAmountINR;
     } else {
       unlockedCategories.push(id);
     }
@@ -311,10 +317,14 @@ export function rebalanceBudget(
 
     const distributed = distributeIntegerBudget(availableForUnlocked, items);
     for (const id of unlockedCategories) {
-      workingAllocations[id] = {
-        ...workingAllocations[id],
-        allocatedAmountINR: distributed[id],
-      };
+      const currentCat = workingAllocations[id];
+      const dist = distributed[id];
+      if (currentCat && dist !== undefined) {
+        workingAllocations[id] = {
+          ...currentCat,
+          allocatedAmountINR: dist,
+        };
+      }
     }
   }
 
@@ -322,17 +332,21 @@ export function rebalanceBudget(
   let finalSum = 0;
   for (const id of CATEGORY_IDS) {
     const alloc = workingAllocations[id];
-    finalSum += alloc.allocatedAmountINR;
-    alloc.percentage = Number(((alloc.allocatedAmountINR / totalBudget) * 100).toFixed(2));
-    alloc.notes = getCategoryGuidanceNote(id, alloc.allocatedAmountINR, guestCount);
+    if (alloc) {
+      finalSum += alloc.allocatedAmountINR;
+      alloc.percentage = Number(((alloc.allocatedAmountINR / totalBudget) * 100).toFixed(2));
+      alloc.notes = getCategoryGuidanceNote(id, alloc.allocatedAmountINR, guestCount);
+    }
   }
+
+  const contingencyAmount = workingAllocations.contingency?.allocatedAmountINR ?? 0;
 
   return {
     totalBudgetINR: totalBudget,
     guestCount,
     perGuestCostINR: Math.round(totalBudget / guestCount),
     allocations: workingAllocations,
-    contingencyINR: workingAllocations.contingency.allocatedAmountINR,
+    contingencyINR: contingencyAmount,
     allocatedSumINR: finalSum,
     remainingINR: totalBudget - finalSum,
   };
