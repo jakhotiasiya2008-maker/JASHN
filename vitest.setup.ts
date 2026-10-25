@@ -31,6 +31,12 @@ Object.defineProperty(window, 'IntersectionObserver', {
   value: MockIntersectionObserver,
 });
 
+// Mock window.scrollTo
+window.scrollTo = () => {};
+
+// Mock HTMLCanvasElement.prototype.getContext
+HTMLCanvasElement.prototype.getContext = () => null;
+
 // Mock ResizeObserver
 class MockResizeObserver {
   observe = () => {};

@@ -23,7 +23,7 @@ import {
 import { loadSavedState, saveState, clearSavedState } from './storage';
 import { WEDDING_VIBE_LABELS, CATEGORY_IDS } from '../domain/constants';
 
-export type PlannerTab = 'overview' | 'budget' | 'timeline' | 'vendors' | 'ideas' | 'planb';
+export type PlannerTab = 'overview' | 'budget' | 'timeline' | 'vendors' | 'ideas' | 'planb' | 'export';
 export type AppTheme = 'royal-gold' | 'pastel-floral' | 'midnight-sangeet' | 'ivory-minimal';
 
 interface PlannerState {
